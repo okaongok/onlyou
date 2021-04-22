@@ -31,14 +31,26 @@ spl_autoload_register([App::class,'loader']);
 
 class  WebApp extends App{
     public $config;
-    public $c;
-    public $a;
+    public $controller;
+    public $action;
+    public $parames;
 
     public function __construct($config,$env){
         $this->config = $config;
-        $this->c = $_GET['c'];
-        $this->a = $_GET['a'];
+        $this->initRequest();
         $this->do();
+    }
+
+    private function initRequest()
+    {
+        if(empty($_SERVER['PATH_INFO'])) 
+            $path_arr = ['default','index'];
+        else
+            $path_arr = explode('/',ltrim($_SERVER['PATH_INFO'],'/'));
+
+        if(count($path_arr) == 1 or $path_arr[1] == '') $path_arr[1] = 'index';
+
+        list($this->c,$this->a) = $path_arr;
     }
 
     public function do(){
