@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use Onlyou\Framework\Controller;
+use Onlyou\Framework\Model;
+use Onlyou\WebApp;
 
 class DefaultController extends Controller{
     public function actionIndex(){
@@ -10,6 +12,8 @@ class DefaultController extends Controller{
     }
 
     public function actionFuck(){
-        echo 'sdf';
+        $query = Model::$db->query('select * from sns_user limit 1');
+        $s = $query->fetch(\PDO::FETCH_ASSOC);
+        print_r($s);
     }
 }

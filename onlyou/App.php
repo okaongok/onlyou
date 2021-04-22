@@ -2,6 +2,7 @@
 namespace Onlyou;
 
 use Onlyou\Framework\Controller;
+use Onlyou\Framework\Model;
 
 define('SYSTEM_ROOT',__DIR__);
 
@@ -58,9 +59,13 @@ class  WebApp extends App{
     public $action;
     public $parames;
 
-    public function __construct(array $config){
+    public function __construct(array $config)
+    {
         $this->config = $config;
         $this->initRequest();
+        if(!empty($this->config['db'])){
+            Model::setDbConnection($this->config['db']);
+        }
         $this->do();
     }
 
