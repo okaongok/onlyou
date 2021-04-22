@@ -1,7 +1,7 @@
 <?php
 namespace Onlyou;
 
-use Onlyou\Formwork\Controller;
+use Onlyou\Framework\Controller;
 
 define('SYSTEM_ROOT',__DIR__);
 

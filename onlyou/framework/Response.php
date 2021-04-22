@@ -1,5 +1,5 @@
 <?php
-namespace Onlyou\Formwork;
+namespace Onlyou\Framework;
 
 use Exception;
 
