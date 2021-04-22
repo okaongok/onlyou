@@ -3,30 +3,53 @@ namespace Onlyou;
 
 use Onlyou\Formwork\Controller;
 
+define('SYSTEM_ROOT',__DIR__);
+
 class App{
     const ENV_DEBUG = 'debug';
 
-    static public function createApp($config,$env=self::ENV_DEBUG){
-        return new WebApp($config,$env);
+    static public function init(string $env){
+        if($env == self::ENV_DEBUG){
+            error_reporting(E_ALL);
+            ini_set('display_errors',1);
+        }
     }
 
-    static function loader($name){
-        
-        include_once(APP_ROOT.'/onlyou/formwork/controller.php');
-        if(strpos($name,'App') == 0){
+    static public function createApp($config,$env=self::ENV_DEBUG){
+        self::init($env);
+        return new WebApp($config);
+    }
+
+    static function loader(string $name){
+        if(strpos($name,'Onlyou') === 0){
             $name = str_replace('\\','/',$name);
+            $name = str_replace('Onlyou','',$name);
             $names = pathinfo($name);
             $basename = strtolower($names['dirname']);
             $filename = $names['filename'];
-            $path = APP_ROOT.'/'.$basename.'/'.$filename.'.php';
+            $path = SYSTEM_ROOT.$basename.'/'.$filename.'.php';
             if(file_exists($path)){
-                include(APP_ROOT.'/'.$basename.'/'.$filename.'.php');
-            }
-            
+                include_once(SYSTEM_ROOT.$basename.'/'.$filename.'.php');
+            } 
+        }elseif(strpos($name,'App') === 0){
+            $name = str_replace('\\','/',$name);
+            $name = str_replace('App/','',$name);
+            $names = pathinfo($name);
+            $basename = strtolower($names['dirname']);
+            $filename = $names['filename'];
+            $path = APP_ROOT.$basename.'/'.$filename.'.php';
+            if(file_exists($path)){
+                include_once(APP_ROOT.$basename.'/'.$filename.'.php');
+            } 
         }
+    }
+
+    static public function mainerror(int $errno , string $errstr , string $errfile, int $errline){
+        die($errstr);
     }
 }
 
+// set_error_handler([App::class,'mainerror']);
 spl_autoload_register([App::class,'loader']);
 
 class  WebApp extends App{
@@ -35,7 +58,7 @@ class  WebApp extends App{
     public $action;
     public $parames;
 
-    public function __construct($config,$env){
+    public function __construct(array $config){
         $this->config = $config;
         $this->initRequest();
         $this->do();

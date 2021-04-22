@@ -1,9 +1,12 @@
 <?php
 namespace App\Controller;
 
-class DefaultController extends \Onlyou\Formwork\Controller{
+use Onlyou\Formwork\Controller;
+
+class DefaultController extends Controller{
     public function actionIndex(){
-        echo 'index';
+        $k = $this->request->query['k'];
+        $this->render('default.index',['test'=>$k]);
     }
 
     public function actionFuck(){
